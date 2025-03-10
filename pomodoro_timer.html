@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポモドーロ式カウントダウンタイマー</title>
+  <style></style>
+</head>
+
+<div id="status">状態</div>
+<div class="timer" id="countdown">00:00</div>
+
+<body>
+  <script>
+    window.onload = function () {
+      const countDown = document.getElementById('countdown');
+      const status = document.getElementById('status');
+      const workTime = 25 * 60 + 1; // 作業時間
+      const breakTime = 5 * 60 + 1; // 休憩時間
+      let distance = workTime; // カウンター
+      let minutes = 0; // 分の値
+      let seconds = 0; // 秒の値
+      let pomodoro = 1; // 作業中と休憩中の判定（1が作業中、0が休憩中）
+      status.textContent = `作業中`; // 状態の表示
+
+      function updateCountDown() {
+        // 1秒ごとに1ずつ値を減らしていく
+        distance--;
+
+        minutes = Math.floor(distance / 60);
+        seconds = distance % 60;
+
+        // 分：秒の形式で表示していく
+        countDown.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // 秒数が減っているかのデバッグ用
+        console.log(distance);
+
+        if (distance <= 0) {
+          // 作業中から休憩中へ移る時
+          if (pomodoro === 1) {
+            status.textContent = `休憩中`;
+            distance = breakTime;
+            pomodoro = 0;
+          }
+          // 休憩中から作業中へ移る時
+          else {
+            status.textContent = `作業中`;
+            distance = workTime;
+            pomodoro = 1;
+          }
+        }
+      }
+
+      // 1秒ごとに起動
+      const cycleTime = 1000;
+      const interval = setInterval(updateCountDown, cycleTime);
+      updateCountDown();
+
+    }
+    </script>
+</body>
